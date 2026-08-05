@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -86,7 +87,7 @@ public class SecurityConfiguration {
   SecurityFilterChain securityFilterChain(
       HttpSecurity http,
       JwtAuthenticationConverter converter,
-      CorsConfigurationSource cors,
+      @Qualifier("corsConfigurationSource") CorsConfigurationSource cors,
       ProblemDetailSecurityHandler problemHandler)
       throws Exception {
     http.csrf(csrf -> csrf.disable())
