@@ -15,7 +15,7 @@
   "portsAttributes": {
     "8080": {
       "label": "WalletWise application",
-      "onAutoForward": "openPreview"
+      "onAutoForward": "openBrowser"
     },
     "5173": {
       "label": "Vite development server",
