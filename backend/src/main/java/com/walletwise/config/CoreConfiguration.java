@@ -1,0 +1,48 @@
+package com.walletwise.config;
+
+import java.nio.charset.StandardCharsets;
+import java.time.Clock;
+import java.util.Arrays;
+import java.util.Locale;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+@Configuration(proxyBeanMethods = false)
+public class CoreConfiguration {
+
+  @Bean
+  Clock clock() {
+    return Clock.systemUTC();
+  }
+
+  @Bean
+  PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder(12);
+  }
+
+  @Bean
+  JwtSecretValidator jwtSecretValidator(AppProperties properties, Environment environment) {
+    String secret = properties.jwt().secret();
+    if (secret == null || secret.getBytes(StandardCharsets.UTF_8).length < 32) {
+      throw new IllegalStateException("JWT_SECRET must contain at least 32 UTF-8 bytes");
+    }
+    boolean production = Arrays.asList(environment.getActiveProfiles()).contains("prod");
+    String normalized = secret.toLowerCase(Locale.ROOT);
+    if (production
+        && (normalized.startsWith("local-development-only")
+            || normalized.contains("replace")
+            || normalized.contains("change-me")
+            || normalized.contains("placeholder"))) {
+      throw new IllegalStateException("Production refuses a documented or placeholder JWT secret");
+    }
+    if (production && !properties.cookieSecure()) {
+      throw new IllegalStateException("Production requires APP_COOKIE_SECURE=true");
+    }
+    return new JwtSecretValidator();
+  }
+
+  public static final class JwtSecretValidator {}
+}
