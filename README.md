@@ -207,15 +207,23 @@ stops the stack without deleting it.
 
 ## Open in Codespaces
 
-The included dev container installs Java 21, Node.js 24, Maven/npm dependencies,
-and Docker Compose support, then forwards ports 8080, 5173, and 5432.
+The included dev container installs Java 21, Node.js 24, and its own Docker
+engine. It builds and starts WalletWise automatically, then forwards ports 8080,
+5173, and 5432.
 
-[Create a WalletWise Codespace](https://codespaces.new/KonkalaSudheerReddy/walletwise-platform?quickstart=1),
-then run:
+[Create a WalletWise Codespace](https://codespaces.new/KonkalaSudheerReddy/walletwise-platform?quickstart=1)
+and wait for the **WalletWise application** port to open. No local installation
+or terminal command is required.
+
+To restart the application later, run:
 
 ```bash
-docker compose up --build
+docker compose up --build --detach
 ```
+
+If an older Codespace reports `docker: command not found`, pull the latest
+`main` branch and select **Codespaces: Rebuild Container** from the command
+palette, or create a fresh Codespace from the link above.
 
 Codespaces requires a signed-in GitHub account, available entitlement, and
 usage quota. The public link does not contain or require a project secret.
