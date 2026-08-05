@@ -172,9 +172,9 @@ loading after every showcase change.
 
 ## GitHub Codespaces
 
-The dev container installs Java 21, Node.js 24, Maven dependencies, npm's locked
-dependency tree, and Docker Compose support. It forwards ports 8080, 5173, and
-5432 without committing any secret.
+The dev container installs Java 21, Node.js 24, and a self-contained Docker
+engine. It builds and starts the Compose stack automatically and forwards ports
+8080, 5173, and 5432 without committing any secret.
 
 After the public repository exists, start a Codespace from:
 
@@ -182,10 +182,11 @@ After the public repository exists, start a Codespace from:
 https://codespaces.new/KonkalaSudheerReddy/walletwise-platform?quickstart=1
 ```
 
-Then run `docker compose up --build` and open the forwarded application port.
-Creating a Codespace requires the viewer's GitHub authentication, entitlement,
-and available usage quota. CLI creation also requires the GitHub OAuth
-`codespace` scope; the public link itself does not.
+Wait for the forwarded **WalletWise application** port to open; no terminal
+command is required. An existing Codespace must be rebuilt after dev-container
+configuration changes. Creating a Codespace requires the viewer's GitHub
+authentication, entitlement, and available usage quota. CLI creation also
+requires the GitHub OAuth `codespace` scope; the public link itself does not.
 
 ## Environment variables
 

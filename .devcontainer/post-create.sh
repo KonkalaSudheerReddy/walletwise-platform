@@ -4,7 +4,11 @@ set -Eeuo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
-./backend/mvnw -B -ntp -f backend/pom.xml dependency:go-offline
-npm ci --prefix frontend
+if ! command -v docker >/dev/null 2>&1; then
+  echo "Docker was not installed by the dev-container feature." >&2
+  exit 1
+fi
 
-echo "Dependencies are ready. Run: docker compose up --build"
+docker compose up --build --detach
+
+echo "WalletWise is starting. Open the forwarded 'WalletWise application' port when prompted."
