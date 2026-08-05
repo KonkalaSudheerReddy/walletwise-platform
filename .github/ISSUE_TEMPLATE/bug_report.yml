@@ -1,0 +1,48 @@
+name: Bug report
+description: Report a reproducible WalletWise defect using synthetic data.
+title: "bug: "
+labels: [bug, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include passwords, tokens, real financial data, or personal information.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Start the application with ...
+        2. Sign in as ...
+        3. Call or open ...
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Backend API
+        - Frontend UI
+        - Database or migrations
+        - Docker or deployment
+        - Documentation
+    validations:
+      required: true
+  - type: input
+    id: revision
+    attributes:
+      label: Revision or release
+      description: Commit SHA, branch, or release tag.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized evidence
+      description: Relevant logs, response status, correlation ID, or screenshot.
+
