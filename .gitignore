@@ -1,0 +1,43 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+!frontend/.env.test
+*.local
+
+# Java / Maven
+**/target/
+**/.mvn/timing.properties
+**/.mvn/wrapper/maven-wrapper.jar
+*.class
+*.log
+
+# Node / frontend
+**/node_modules/
+frontend/dist/
+frontend/playwright-report/
+frontend/test-results/
+frontend/coverage/
+*.tsbuildinfo
+
+# IDEs and operating systems
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.iml
+.project
+.classpath
+.settings/
+.DS_Store
+Thumbs.db
+
+# Runtime and database data
+data/
+postgres-data/
+*.pid
+
+# Temporary files
+.tmp/
+tmp/
+*.tmp
+*.bak
