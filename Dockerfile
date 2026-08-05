@@ -7,14 +7,14 @@ RUN --mount=type=cache,target=/root/.npm npm ci
 COPY frontend/ ./
 RUN npm run build
 
-FROM eclipse-temurin:21.0.12_8-jdk-alpine AS backend-build
+FROM eclipse-temurin:21.0.11_10-jdk-alpine-3.23 AS backend-build
 WORKDIR /workspace/backend
 COPY backend/ ./
 COPY --from=frontend-build /workspace/frontend/dist/ ./src/main/resources/static/
 RUN --mount=type=cache,target=/root/.m2 chmod +x mvnw \
     && ./mvnw -B -DskipTests package
 
-FROM eclipse-temurin:21.0.12_8-jre-alpine AS runtime
+FROM eclipse-temurin:21.0.11_10-jre-alpine-3.23 AS runtime
 RUN addgroup -S walletwise \
     && adduser -S -G walletwise -h /app walletwise
 WORKDIR /app
