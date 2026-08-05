@@ -212,8 +212,10 @@ engine. It builds and starts WalletWise automatically, then forwards ports 8080,
 5173, and 5432.
 
 [Create a WalletWise Codespace](https://codespaces.new/KonkalaSudheerReddy/walletwise-platform?quickstart=1)
-and wait for the **WalletWise application** port to open. No local installation
-or terminal command is required.
+and wait for the **WalletWise application** port to open in a separate browser
+tab. No local installation or terminal command is required. If the tab does not
+open, use **Ports > 8080 > Open in Browser**; the embedded editor preview is
+intentionally blocked by the application's anti-framing security header.
 
 To restart the application later, run:
 

@@ -182,11 +182,14 @@ After the public repository exists, start a Codespace from:
 https://codespaces.new/KonkalaSudheerReddy/walletwise-platform?quickstart=1
 ```
 
-Wait for the forwarded **WalletWise application** port to open; no terminal
-command is required. An existing Codespace must be rebuilt after dev-container
-configuration changes. Creating a Codespace requires the viewer's GitHub
-authentication, entitlement, and available usage quota. CLI creation also
-requires the GitHub OAuth `codespace` scope; the public link itself does not.
+Wait for the forwarded **WalletWise application** port to open in a separate
+browser tab; no terminal command is required. If necessary, select **Open in
+Browser** for port 8080 instead of the embedded editor preview, which the
+application's anti-framing security header intentionally blocks. An existing
+Codespace must be rebuilt after dev-container configuration changes. Creating a
+Codespace requires the viewer's GitHub authentication, entitlement, and
+available usage quota. CLI creation also requires the GitHub OAuth `codespace`
+scope; the public link itself does not.
 
 ## Environment variables
 

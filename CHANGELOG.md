@@ -5,6 +5,12 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Codespaces now launches WalletWise in a regular browser tab so the
+  application's anti-framing security header does not produce a blank embedded
+  preview.
+
 ## [1.0.0] - 2026-08-05
 
 ### Added
