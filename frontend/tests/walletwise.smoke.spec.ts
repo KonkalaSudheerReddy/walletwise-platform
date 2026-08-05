@@ -7,7 +7,7 @@ test('demo user completes the core WalletWise journey', async ({ page }) => {
   const incomeNote = `E2E income ${runId}`;
   const expenseNote = `E2E expense ${runId}`;
 
-  await page.goto('/login', { waitUntil: 'networkidle' });
+  await page.goto('/login', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('heading', { name: 'Welcome back' })).toBeVisible();
   await page.getByRole('button', { name: 'Use demo account' }).click();
   await page.getByRole('button', { name: 'Sign in' }).click();

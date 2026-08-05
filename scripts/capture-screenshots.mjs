@@ -29,7 +29,7 @@ const context = await browser.newContext({
 const page = await context.newPage();
 
 try {
-  await page.goto(`${baseUrl}/login`, { waitUntil: "networkidle" });
+  await page.goto(`${baseUrl}/login`, { waitUntil: "domcontentloaded" });
   await page.getByRole("heading", { name: "Welcome back", exact: true }).waitFor();
   await page.screenshot({
     path: path.join(outputDirectory, "login.jpg"),
@@ -44,7 +44,7 @@ try {
   await page.getByRole("heading").first().waitFor();
 
   for (const [route, filename, heading] of captures) {
-    await page.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });
+    await page.goto(`${baseUrl}${route}`, { waitUntil: "domcontentloaded" });
     await page.waitForURL(`**${route}`);
     await page.getByRole("heading", { name: heading, exact: true }).waitFor();
     await page.evaluate(() => document.fonts.ready);
