@@ -39,4 +39,3 @@ else
 fi
 
 echo "WalletWise verification completed successfully."
-

@@ -36,4 +36,3 @@ and cannot execute a second transfer.
   application-level existence check.
 - This mechanism protects duplicate transfer intent; it does not replace
   authentication, authorization, balance locks, or a database transaction.
-

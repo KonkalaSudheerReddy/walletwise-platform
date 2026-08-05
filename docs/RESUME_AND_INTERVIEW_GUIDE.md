@@ -228,4 +228,3 @@ scale or team ownership, not by feature count alone.
 - Sensible future work includes accessibility audits, stronger operational
   dashboards, scheduled backup/restore exercises, ledger reconciliation, email
   notifications, and carefully designed multi-currency support.
-

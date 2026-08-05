@@ -11,4 +11,3 @@ fi
 
 docker compose version >/dev/null
 docker compose up --build "$@"
-

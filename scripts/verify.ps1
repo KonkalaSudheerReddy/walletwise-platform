@@ -22,7 +22,6 @@ function Invoke-CheckedCommand {
         throw "$Executable failed with exit code $LASTEXITCODE."
     }
 }
-
 Push-Location $repoRoot
 try {
     Write-Host '[1/3] Verifying backend'
@@ -58,4 +57,3 @@ try {
 finally {
     Pop-Location
 }
-

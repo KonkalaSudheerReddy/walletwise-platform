@@ -31,4 +31,3 @@ assets aggressively and avoid long caching for `index.html`.
   larger scale.
 - GitHub Pages remains a separate project showcase and must not be presented as
   the live application.
-

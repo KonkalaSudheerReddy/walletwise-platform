@@ -13,4 +13,3 @@ Describe the problem and the solution in a few focused sentences.
 ## Evidence
 
 List commands run, relevant test cases, and screenshots for visual changes.
-

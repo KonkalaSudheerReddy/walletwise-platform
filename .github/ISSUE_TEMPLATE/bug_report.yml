@@ -45,4 +45,3 @@ body:
     attributes:
       label: Sanitized evidence
       description: Relevant logs, response status, correlation ID, or screenshot.
-

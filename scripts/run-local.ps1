@@ -10,7 +10,6 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
     throw 'Docker is required. Install Docker Desktop or Docker Engine with Compose v2.'
 }
-
 Push-Location $repoRoot
 try {
     & docker compose version | Out-Null
@@ -31,4 +30,3 @@ try {
 finally {
     Pop-Location
 }
-

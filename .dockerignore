@@ -15,4 +15,3 @@ postman
 .env
 .env.*
 !.env.example
-

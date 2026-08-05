@@ -40,4 +40,3 @@ arbitrarily.
 - Future service extraction would require explicit contracts and data ownership;
   the current design does not pretend that package boundaries alone provide
   runtime isolation.
-

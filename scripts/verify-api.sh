@@ -9,4 +9,3 @@ if ! command -v node >/dev/null 2>&1; then
 fi
 
 node "$repo_root/scripts/verify-api.mjs"
-

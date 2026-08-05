@@ -6,7 +6,6 @@ updates:
       interval: monthly
     labels: [dependencies, java]
     open-pull-requests-limit: 5
-
   - package-ecosystem: npm
     directory: /frontend
     schedule:
@@ -31,4 +30,3 @@ updates:
       interval: monthly
     labels: [dependencies, docker]
     open-pull-requests-limit: 5
-

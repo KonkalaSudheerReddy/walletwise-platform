@@ -8,4 +8,3 @@ cd "$repo_root"
 npm ci --prefix frontend
 
 echo "Dependencies are ready. Run: docker compose up --build"
-

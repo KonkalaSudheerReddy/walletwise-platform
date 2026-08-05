@@ -10,7 +10,6 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
     throw 'Node.js 20 or newer is required for API verification.'
 }
-
 $env:WALLETWISE_BASE_URL = $BaseUrl
 try {
     & node (Join-Path $repoRoot 'scripts\verify-api.mjs')
@@ -21,4 +20,3 @@ try {
 finally {
     Remove-Item Env:WALLETWISE_BASE_URL -ErrorAction SilentlyContinue
 }
-
