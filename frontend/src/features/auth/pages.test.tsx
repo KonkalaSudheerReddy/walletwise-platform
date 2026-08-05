@@ -6,7 +6,12 @@ import { LoginPage } from './pages';
 
 test('login form reports accessible validation errors and fills demo credentials', async () => {
   const user = userEvent.setup();
-  renderWithProviders(<AuthProvider><LoginPage /></AuthProvider>, { route: '/login' });
+  renderWithProviders(
+    <AuthProvider>
+      <LoginPage />
+    </AuthProvider>,
+    { route: '/login' }
+  );
 
   await screen.findByRole('heading', { name: 'Welcome back' });
   await user.click(screen.getByRole('button', { name: 'Sign in' }));

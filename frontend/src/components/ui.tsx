@@ -94,7 +94,10 @@ export function TextField({
   const fieldId = id ?? generatedId;
   const helpId = `${fieldId}-help`;
   return (
-    <label className="grid gap-1.5 text-sm font-medium text-slate-700 dark:text-slate-200" htmlFor={fieldId}>
+    <label
+      className="grid gap-1.5 text-sm font-medium text-slate-700 dark:text-slate-200"
+      htmlFor={fieldId}
+    >
       {label}
       <input
         id={fieldId}
@@ -108,7 +111,10 @@ export function TextField({
         {...props}
       />
       {(error || hint) && (
-        <span id={helpId} className={cn('text-xs font-normal', error ? 'text-rose-600' : 'text-slate-500')}>
+        <span
+          id={helpId}
+          className={cn('text-xs font-normal', error ? 'text-rose-600' : 'text-slate-500')}
+        >
           {error ?? hint}
         </span>
       )}
@@ -128,7 +134,10 @@ export function SelectField({
   const fieldId = id ?? generatedId;
   const helpId = `${fieldId}-help`;
   return (
-    <label className="grid gap-1.5 text-sm font-medium text-slate-700 dark:text-slate-200" htmlFor={fieldId}>
+    <label
+      className="grid gap-1.5 text-sm font-medium text-slate-700 dark:text-slate-200"
+      htmlFor={fieldId}
+    >
       {label}
       <select
         id={fieldId}
@@ -140,7 +149,10 @@ export function SelectField({
         {children}
       </select>
       {(error || hint) && (
-        <span id={helpId} className={cn('text-xs font-normal', error ? 'text-rose-600' : 'text-slate-500')}>
+        <span
+          id={helpId}
+          className={cn('text-xs font-normal', error ? 'text-rose-600' : 'text-slate-500')}
+        >
           {error ?? hint}
         </span>
       )}
@@ -163,14 +175,24 @@ export function PageHeader({
         <h1 className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white sm:text-3xl">
           {title}
         </h1>
-        {description && <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{description}</p>}
+        {description && (
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{description}</p>
+        )}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </header>
   );
 }
 
-export function Money({ value, currency, className }: { value: DecimalValue; currency: string; className?: string }) {
+export function Money({
+  value,
+  currency,
+  className
+}: {
+  value: DecimalValue;
+  currency: string;
+  className?: string;
+}) {
   return <span className={cn('tabular-nums', className)}>{formatMoney(value, currency)}</span>;
 }
 
@@ -186,7 +208,8 @@ export function Badge({
       className={cn(
         'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold',
         tone === 'neutral' && 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200',
-        tone === 'success' && 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200',
+        tone === 'success' &&
+          'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200',
         tone === 'warning' && 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200',
         tone === 'danger' && 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-200',
         tone === 'info' && 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-200'
@@ -256,11 +279,20 @@ export function EmptyState({
   );
 }
 
-export function ErrorState({ error, title = 'Unable to load this page' }: { error: Error; title?: string }) {
+export function ErrorState({
+  error,
+  title = 'Unable to load this page'
+}: {
+  error: Error;
+  title?: string;
+}) {
   const maybeApiError = error as ApiError;
   const correlationId = maybeApiError.problem?.correlationId;
   return (
-    <div className="rounded-2xl border border-rose-200 bg-rose-50 p-5 text-rose-950 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-100" role="alert">
+    <div
+      className="rounded-2xl border border-rose-200 bg-rose-50 p-5 text-rose-950 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-100"
+      role="alert"
+    >
       <div className="flex gap-3">
         <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
         <div>
@@ -300,7 +332,10 @@ export function Modal({
 
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 grid place-items-end bg-slate-950/55 p-0 sm:place-items-center sm:p-4" onMouseDown={onClose}>
+    <div
+      className="fixed inset-0 z-50 grid place-items-end bg-slate-950/55 p-0 sm:place-items-center sm:p-4"
+      onMouseDown={onClose}
+    >
       <section
         role="dialog"
         aria-modal="true"
@@ -315,7 +350,13 @@ export function Modal({
             </h2>
             {description && <p className="mt-1 text-sm text-slate-500">{description}</p>}
           </div>
-          <Button ref={closeRef} variant="ghost" size="sm" aria-label="Close dialog" onClick={onClose}>
+          <Button
+            ref={closeRef}
+            variant="ghost"
+            size="sm"
+            aria-label="Close dialog"
+            onClick={onClose}
+          >
             <X className="h-5 w-5" />
           </Button>
         </header>
@@ -337,7 +378,12 @@ export function Pagination({
   if (totalPages <= 1) return null;
   return (
     <nav className="flex items-center justify-between gap-4" aria-label="Pagination">
-      <Button variant="secondary" size="sm" disabled={page <= 0} onClick={() => onPageChange(page - 1)}>
+      <Button
+        variant="secondary"
+        size="sm"
+        disabled={page <= 0}
+        onClick={() => onPageChange(page - 1)}
+      >
         <ChevronLeft className="h-4 w-4" /> Previous
       </Button>
       <span className="text-sm text-slate-500">

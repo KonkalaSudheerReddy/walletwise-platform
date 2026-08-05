@@ -30,7 +30,11 @@ class JwtServiceTest {
     AppProperties properties =
         new AppProperties(
             new AppProperties.Jwt(
-                "walletwise-test", secret, Duration.ofMinutes(15), Duration.ofDays(7)),
+                "walletwise-test",
+                secret,
+                Duration.ofMinutes(15),
+                Duration.ofDays(7),
+                Duration.ofSeconds(3)),
             false,
             List.of("http://localhost:5173"),
             false,

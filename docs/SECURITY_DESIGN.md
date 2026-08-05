@@ -59,6 +59,12 @@ refresh revokes the presented record, creates a replacement, rotates the cookie,
 and returns a new access token. Logout revokes the current refresh record and
 expires the cookie.
 
+Same-origin browser tabs coordinate refresh through an exclusive Web Lock and
+broadcast the new in-memory access token without persisting it. The server also
+uses a three-second duplicate-request grace: immediate reuse is rejected without
+revoking the successful replacement, while reuse after that bound revokes the
+token family as a replay signal.
+
 Production cookies use `Secure`, `HttpOnly`, `SameSite=Lax`, and the narrowest
 practical path. Local HTTP development explicitly disables only `Secure`.
 
@@ -67,8 +73,9 @@ practical path. Local HTTP development explicitly disables only `Secure`.
 Spring method security protects role-sensitive services and administrator
 routes. Regular service and repository methods combine the resource UUID with
 the authenticated owner UUID. A client-supplied owner ID is never authoritative.
-Disabled users cannot create a new session; status changes invalidate future
-access according to the token and refresh-token policy.
+Disabled users cannot create a new session. Every bearer token is also checked
+against current account status, so disabling an account invalidates existing
+access without waiting for JWT expiry.
 
 Administrator access is intentionally narrow. Admin users can inspect users and
 sanitized audits, change enabled state, and trigger a controlled budget-alert

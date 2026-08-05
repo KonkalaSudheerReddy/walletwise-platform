@@ -1,5 +1,7 @@
 package com.walletwise.category;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/categories")
+@Tag(name = "Categories", description = "Active income and expense categories")
 public class CategoryController {
   private final CategoryRepository categories;
 
@@ -17,6 +20,7 @@ public class CategoryController {
   }
 
   @GetMapping
+  @Operation(summary = "List active categories, optionally filtered by type")
   List<CategoryResponse> list(@RequestParam(required = false) Category.Type type) {
     List<Category> result =
         type == null

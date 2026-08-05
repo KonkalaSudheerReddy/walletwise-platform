@@ -31,6 +31,8 @@ test('dashboard shows a useful RFC 7807 API failure', async () => {
   );
 
   renderWithProviders(<DashboardPage />);
-  expect(await screen.findByRole('alert')).toHaveTextContent('Analytics are temporarily unavailable.');
+  expect(await screen.findByRole('alert')).toHaveTextContent(
+    'Analytics are temporarily unavailable.'
+  );
   expect(screen.getByRole('alert')).toHaveTextContent('test-correlation-id');
 });

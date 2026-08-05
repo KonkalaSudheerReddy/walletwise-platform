@@ -16,7 +16,9 @@ class ResizeObserverMock {
 }
 
 class BroadcastChannelMock {
-  constructor(_name: string) {}
+  constructor(name: string) {
+    void name;
+  }
   postMessage() {}
   close() {}
   addEventListener() {}

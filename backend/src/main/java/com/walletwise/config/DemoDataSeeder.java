@@ -29,6 +29,7 @@ import java.time.ZoneOffset;
 import java.util.UUID;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DemoDataSeeder implements ApplicationRunner {
   public static final String DEMO_EMAIL = "demo@walletwise.app";
   public static final String DEMO_PASSWORD = "Demo@12345";
+  private static final UUID DEMO_USER_ID = UUID.fromString("00000000-0000-0000-0000-000000000101");
   private final AppProperties properties;
   private final UserRepository users;
   private final WalletRepository wallets;
@@ -49,6 +51,7 @@ public class DemoDataSeeder implements ApplicationRunner {
   private final PasswordEncoder passwords;
   private final BudgetAlertService alerts;
   private final Clock clock;
+  private final JdbcTemplate jdbc;
 
   public DemoDataSeeder(
       AppProperties properties,
@@ -62,7 +65,8 @@ public class DemoDataSeeder implements ApplicationRunner {
       AuditLogRepository auditLogs,
       PasswordEncoder passwords,
       BudgetAlertService alerts,
-      Clock clock) {
+      Clock clock,
+      JdbcTemplate jdbc) {
     this.properties = properties;
     this.users = users;
     this.wallets = wallets;
@@ -75,26 +79,32 @@ public class DemoDataSeeder implements ApplicationRunner {
     this.passwords = passwords;
     this.alerts = alerts;
     this.clock = clock;
+    this.jdbc = jdbc;
   }
 
   @Override
   @Transactional
   public void run(ApplicationArguments args) {
     seedAdminIfConfigured();
-    if (!properties.demoSeedEnabled() || users.existsByEmailNormalized(DEMO_EMAIL)) return;
+    if (!properties.demoSeedEnabled()) return;
+
+    resetDemoData();
 
     Instant now = Instant.now(clock);
+    YearMonth oldestMonth = YearMonth.now(clock).minusMonths(2);
+    Instant createdAt =
+        oldestMonth.atDay(1).atStartOfDay(ZoneOffset.UTC).toInstant().minusSeconds(1);
     AppUser demo =
         users.save(
             new AppUser(
-                UUID.fromString("00000000-0000-0000-0000-000000000101"),
+                DEMO_USER_ID,
                 "WalletWise Demo",
                 DEMO_EMAIL,
                 passwords.encode(DEMO_PASSWORD),
                 UserRole.USER,
                 true,
                 "USD",
-                now));
+                createdAt));
     Wallet checking =
         wallets.save(
             new Wallet(
@@ -103,7 +113,7 @@ public class DemoDataSeeder implements ApplicationRunner {
                 "Everyday Checking",
                 Wallet.Type.BANK,
                 "USD",
-                now));
+                createdAt));
     Wallet cash =
         wallets.save(
             new Wallet(
@@ -112,7 +122,7 @@ public class DemoDataSeeder implements ApplicationRunner {
                 "Cash Wallet",
                 Wallet.Type.CASH,
                 "USD",
-                now));
+                createdAt));
     Wallet savings =
         wallets.save(
             new Wallet(
@@ -121,10 +131,11 @@ public class DemoDataSeeder implements ApplicationRunner {
                 "Emergency Savings",
                 Wallet.Type.SAVINGS,
                 "USD",
-                now));
+                createdAt));
 
-    opening(cash, demo, amount("200"), now.minusSeconds(90L * 86400));
-    opening(savings, demo, amount("2500"), now.minusSeconds(90L * 86400));
+    Instant openingTime = createdAt.plusSeconds(1);
+    opening(cash, demo, amount("200"), openingTime);
+    opening(savings, demo, amount("2500"), openingTime);
     Category salary = category("salary", Category.Type.INCOME);
     Category housing = category("housing", Category.Type.EXPENSE);
     Category groceries = category("groceries", Category.Type.EXPENSE);
@@ -185,7 +196,7 @@ public class DemoDataSeeder implements ApplicationRunner {
           null);
     }
 
-    Instant transferTime = now.minusSeconds(2L * 86400);
+    Instant transferTime = now.minusSeconds(60);
     String transferKey = "demo-seed-transfer-v1";
     Transfer transfer =
         transfers.save(
@@ -303,6 +314,18 @@ public class DemoDataSeeder implements ApplicationRunner {
             now));
   }
 
+  private void resetDemoData() {
+    jdbc.update("delete from notifications where owner_id = ?", DEMO_USER_ID);
+    jdbc.update("delete from audit_logs where actor_user_id = ?", DEMO_USER_ID);
+    jdbc.update("delete from refresh_tokens where user_id = ?", DEMO_USER_ID);
+    jdbc.update("delete from idempotency_records where owner_id = ?", DEMO_USER_ID);
+    jdbc.update("delete from ledger_entries where owner_id = ?", DEMO_USER_ID);
+    jdbc.update("delete from transfers where owner_id = ?", DEMO_USER_ID);
+    jdbc.update("delete from budgets where owner_id = ?", DEMO_USER_ID);
+    jdbc.update("delete from wallets where owner_id = ?", DEMO_USER_ID);
+    jdbc.update("delete from app_users where id = ?", DEMO_USER_ID);
+  }
+
   private Category category(String normalizedName, Category.Type type) {
     return categories.findByNormalizedNameAndType(normalizedName, type).orElseThrow();
   }
@@ -376,6 +399,7 @@ public class DemoDataSeeder implements ApplicationRunner {
     Instant candidate =
         LocalDateTime.of(month.atDay(safeDay), java.time.LocalTime.of(hour, 0))
             .toInstant(ZoneOffset.UTC);
-    return candidate.isAfter(now) ? now.minusSeconds((long) day * 600) : candidate;
+    Instant latestAllowed = now.minusSeconds((long) (32 - day) * 600);
+    return candidate.isAfter(latestAllowed) ? latestAllowed : candidate;
   }
 }

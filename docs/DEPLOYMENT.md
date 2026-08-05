@@ -194,7 +194,7 @@ and available usage quota. CLI creation also requires the GitHub OAuth
 | `JWT_SECRET` | Yes | Signing material; production requires at least 32 unpredictable characters | Yes |
 | `APP_CORS_ALLOWED_ORIGINS` | Development / split origin | Explicit comma-separated browser origins | No |
 | `APP_COOKIE_SECURE` | Yes | Requires HTTPS-only refresh cookie in production | No |
-| `APP_DEMO_SEED_ENABLED` | Optional | Enables only synthetic, idempotent demo data | No |
+| `APP_DEMO_SEED_ENABLED` | Optional | Rebuilds only the synthetic demo account at startup | No |
 | `APP_ADMIN_EMAIL` | Optional | Enables an explicit admin seed when paired with a password | Sensitive |
 | `APP_ADMIN_PASSWORD` | Optional | Administrator seed password | Yes |
 | `APP_PUBLIC_URL` | Hosted demo | Canonical same-origin deployment URL | No |
@@ -203,6 +203,7 @@ and available usage quota. CLI creation also requires the GitHub OAuth
 | `DB_POOL_SIZE` | Optional | Hikari maximum pool size; defaults to 5 | No |
 | `APP_ACCESS_TOKEN_TTL` | Optional | ISO-8601 access-token duration; defaults to `PT15M` | No |
 | `APP_REFRESH_TOKEN_TTL` | Optional | ISO-8601 refresh-token duration; defaults to `P7D` | No |
+| `APP_REFRESH_REUSE_GRACE` | Optional | Bounded duplicate-rotation grace; defaults to `PT3S` and may not exceed 30 seconds | No |
 | `APP_IDEMPOTENCY_RETENTION` | Optional | ISO-8601 idempotency-record retention; defaults to `P7D` | No |
 
 ## Troubleshooting

@@ -1,9 +1,4 @@
-import {
-  useEffect,
-  useMemo,
-  useSyncExternalStore,
-  type ReactNode
-} from 'react';
+import { useEffect, useMemo, useSyncExternalStore, type ReactNode } from 'react';
 import {
   getSessionSnapshot,
   login,

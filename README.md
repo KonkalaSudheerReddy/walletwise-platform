@@ -43,7 +43,7 @@ delivery—not a real-money product.
 
 ## Demo account
 
-The synthetic demo profile seeds this account idempotently:
+The synthetic demo profile rebuilds this account deterministically:
 
 ```text
 Email:    demo@walletwise.app
@@ -51,6 +51,8 @@ Password: Demo@12345
 ```
 
 It exists only when `APP_DEMO_SEED_ENABLED=true` or the demo profile is active.
+Its synthetic wallets, ledger, budgets, and analytics are refreshed at startup
+so relative-month dates and every immutable `balanceAfter` value stay coherent.
 Never use the demo profile or known credentials for private or real financial
 data.
 

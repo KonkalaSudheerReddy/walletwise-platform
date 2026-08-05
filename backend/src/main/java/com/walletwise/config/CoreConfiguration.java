@@ -2,6 +2,7 @@ package com.walletwise.config;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Clock;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Locale;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +41,12 @@ public class CoreConfiguration {
     }
     if (production && !properties.cookieSecure()) {
       throw new IllegalStateException("Production requires APP_COOKIE_SECURE=true");
+    }
+    Duration refreshGrace = properties.jwt().refreshReuseGrace();
+    if (refreshGrace == null
+        || refreshGrace.isNegative()
+        || refreshGrace.compareTo(Duration.ofSeconds(30)) > 0) {
+      throw new IllegalStateException("APP_REFRESH_REUSE_GRACE must be between PT0S and PT30S");
     }
     return new JwtSecretValidator();
   }

@@ -13,6 +13,7 @@ export interface SessionSnapshot {
 let accessToken: string | null = null;
 let session: SessionSnapshot = { status: 'restoring', user: null };
 let refreshPromise: Promise<boolean> | null = null;
+let sessionChannel: BroadcastChannel | null = null;
 const listeners = new Set<() => void>();
 
 function publish(next: SessionSnapshot) {
@@ -20,14 +21,16 @@ function publish(next: SessionSnapshot) {
   listeners.forEach((listener) => listener());
 }
 
-function acceptAuthentication(response: AuthResponse) {
+function acceptAuthentication(response: AuthResponse, announce = true) {
   accessToken = response.accessToken;
   publish({ status: 'authenticated', user: response.user });
+  if (announce) sessionChannel?.postMessage({ type: 'authenticated', response });
 }
 
-function clearAuthentication() {
+function clearAuthentication(announce = false) {
   accessToken = null;
   publish({ status: 'anonymous', user: null });
+  if (announce) sessionChannel?.postMessage({ type: 'logout' });
 }
 
 export function subscribeSession(listener: () => void) {
@@ -94,7 +97,7 @@ async function parseSuccess<T>(response: Response): Promise<T> {
   return (await response.json()) as T;
 }
 
-async function refreshAccessToken(): Promise<boolean> {
+async function performRefresh(): Promise<boolean> {
   if (refreshPromise) return refreshPromise;
 
   refreshPromise = (async () => {
@@ -121,22 +124,34 @@ async function refreshAccessToken(): Promise<boolean> {
   return refreshPromise;
 }
 
+async function refreshAccessToken(staleToken: string | null = accessToken): Promise<boolean> {
+  const locks = typeof navigator === 'undefined' ? undefined : navigator.locks;
+  if (!locks) return performRefresh();
+
+  return locks.request('walletwise-session-refresh', { mode: 'exclusive' }, async () => {
+    if (accessToken && accessToken !== staleToken) return true;
+    return performRefresh();
+  });
+}
+
 export async function restoreSession() {
   if (session.status !== 'restoring') return;
   await refreshAccessToken();
 }
 
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const attemptedToken = accessToken;
   const response = await fetch(`${API_BASE_URL}${path}`, createInit(options));
 
   if (response.status === 401 && !options.skipRefresh) {
-    const refreshed = await refreshAccessToken();
+    const refreshed = await refreshAccessToken(attemptedToken);
     if (refreshed) {
       const retried = await fetch(
         `${API_BASE_URL}${path}`,
         createInit({ ...options, skipRefresh: true })
       );
       if (retried.ok) return parseSuccess<T>(retried);
+      if (retried.status === 401) clearAuthentication();
       throw new ApiError(await problemFromResponse(retried));
     }
   }
@@ -172,18 +187,18 @@ export async function logout() {
   try {
     await apiRequest<void>('/api/v1/auth/logout', { method: 'POST', skipRefresh: true });
   } finally {
-    clearAuthentication();
-    if (typeof BroadcastChannel !== 'undefined') {
-      const channel = new BroadcastChannel('walletwise-session');
-      channel.postMessage('logout');
-      channel.close();
-    }
+    clearAuthentication(true);
   }
 }
 
 if (typeof BroadcastChannel !== 'undefined') {
-  const channel = new BroadcastChannel('walletwise-session');
-  channel.addEventListener('message', (event: MessageEvent<unknown>) => {
-    if (event.data === 'logout') clearAuthentication();
+  sessionChannel = new BroadcastChannel('walletwise-session');
+  sessionChannel.addEventListener('message', (event: MessageEvent<unknown>) => {
+    const message = event.data as
+      | { type: 'authenticated'; response: AuthResponse }
+      | { type: 'logout' }
+      | undefined;
+    if (message?.type === 'authenticated') acceptAuthentication(message.response, false);
+    if (message?.type === 'logout') clearAuthentication();
   });
 }

@@ -25,7 +25,8 @@ same-origin deployment, and a restricted cookie path.
 
 ## Consequences
 
-- Ordinary API authentication is stateless until access-token expiry.
+- JWT signatures and claims authorize ordinary requests, with one current-user
+  status lookup so account disablement takes effect immediately.
 - The server retains control over session continuation through refresh-token
   rotation and revocation.
 - A stolen access JWT remains usable until expiry unless a broader emergency
@@ -34,6 +35,8 @@ same-origin deployment, and a restricted cookie path.
   in localStorage or sessionStorage.
 - Refresh coordination in the frontend must prevent duplicate refresh storms and
   infinite retry loops.
+- Cross-tab refresh uses an exclusive Web Lock plus a same-origin broadcast. A
+  short server-side concurrency grace rejects duplicate rotations without
+  invalidating the successful replacement; delayed reuse still revokes the family.
 - The signing secret and database token hashes are security-sensitive and must
   not appear in code, logs, audits, screenshots, or API examples.
-

@@ -5,6 +5,9 @@ import com.walletwise.transfer.TransferDtos.TransferRequest;
 import com.walletwise.transfer.TransferDtos.TransferResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -36,10 +39,17 @@ public class TransferController {
   @Operation(
       summary = "Transfer funds between wallets",
       description = "Uses a caller-supplied idempotency key and locks both wallet rows atomically.")
+  @ApiResponses({
+    @ApiResponse(responseCode = "400", ref = "#/components/responses/BadRequest"),
+    @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
+    @ApiResponse(responseCode = "409", ref = "#/components/responses/Conflict")
+  })
   TransferResponse create(
       @Parameter(
               description = "Unique retry key scoped to this user and operation",
-              required = true)
+              required = true,
+              example = "transfer-018f6f90-8f8b-7f42-a063-4f22bd12f244",
+              schema = @Schema(minLength = 8, maxLength = 128, pattern = "[A-Za-z0-9._:-]{8,128}"))
           @RequestHeader("Idempotency-Key")
           String key,
       @Valid @RequestBody TransferRequest request) {

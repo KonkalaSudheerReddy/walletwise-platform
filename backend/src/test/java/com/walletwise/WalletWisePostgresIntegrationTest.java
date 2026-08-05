@@ -327,6 +327,43 @@ class WalletWisePostgresIntegrationTest {
         .andExpect(jsonPath("$.correlationId").isNotEmpty());
   }
 
+  @Test
+  void concurrentRefreshDoesNotRevokeTheSuccessfulReplacement() throws Exception {
+    String email = "refresh-" + UUID.randomUUID() + "@example.com";
+    MvcResult registration =
+        mvc.perform(
+                post("/api/v1/auth/register")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {"displayName":"Refresh User","email":"%s","password":"StrongPass@123","preferredCurrency":"USD"}
+                        """
+                            .formatted(email)))
+            .andExpect(status().isCreated())
+            .andReturn();
+    String originalCookie = responseCookie(registration);
+
+    List<MvcResult> concurrent =
+        runConcurrently(() -> performRefresh(originalCookie), () -> performRefresh(originalCookie));
+    List<Integer> statuses =
+        new ArrayList<>(
+            concurrent.stream().map(result -> result.getResponse().getStatus()).toList());
+    Collections.sort(statuses);
+    assertThat(statuses).containsExactly(200, 401);
+
+    MvcResult successful =
+        concurrent.stream()
+            .filter(result -> result.getResponse().getStatus() == 200)
+            .findFirst()
+            .orElseThrow();
+    String replacementCookie = responseCookie(successful);
+    mvc.perform(
+            post("/api/v1/auth/refresh")
+                .header("Cookie", replacementCookie)
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+  }
+
   private UUID createWallet(String token, String name, String openingBalance) throws Exception {
     return createWallet(token, name, openingBalance, "USD");
   }
@@ -388,6 +425,16 @@ class WalletWisePostgresIntegrationTest {
                     """
                         .formatted(source, destination, amount)))
         .andReturn();
+  }
+
+  private MvcResult performRefresh(String cookie) throws Exception {
+    return mvc.perform(post("/api/v1/auth/refresh").header("Cookie", cookie)).andReturn();
+  }
+
+  private static String responseCookie(MvcResult result) {
+    String setCookie = result.getResponse().getHeader("Set-Cookie");
+    assertThat(setCookie).isNotBlank();
+    return setCookie.split(";", 2)[0];
   }
 
   @SafeVarargs

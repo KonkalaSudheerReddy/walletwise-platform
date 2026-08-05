@@ -10,7 +10,10 @@ test('concurrent 401 responses share one refresh and retry once', async () => {
       if (request.headers.get('Authorization') === 'Bearer test-access-token') {
         return HttpResponse.json({ id: params.id });
       }
-      return HttpResponse.json({ title: 'Unauthorized', status: 401, detail: 'Expired' }, { status: 401 });
+      return HttpResponse.json(
+        { title: 'Unauthorized', status: 401, detail: 'Expired' },
+        { status: 401 }
+      );
     }),
     http.post('http://localhost/api/v1/auth/refresh', () => {
       refreshCalls += 1;

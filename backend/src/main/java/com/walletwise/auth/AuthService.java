@@ -126,7 +126,11 @@ public class AuthService {
                         "refresh_token_invalid",
                         "Refresh token is invalid"));
     if (!current.isActive(now)) {
-      if (current.getRevokedAt() != null && current.getReplacedById() != null) {
+      boolean rotatedOutsideConcurrencyGrace =
+          current.getRevokedAt() != null
+              && current.getReplacedById() != null
+              && now.isAfter(current.getRevokedAt().plus(properties.jwt().refreshReuseGrace()));
+      if (rotatedOutsideConcurrencyGrace) {
         refreshTokens.revokeFamily(current.getFamilyId(), now);
       }
       throw new ApiException(

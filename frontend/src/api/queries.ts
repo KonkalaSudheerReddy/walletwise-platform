@@ -65,8 +65,7 @@ function invalidateFinancialData(client: QueryClient) {
 export function useWallets(includeArchived = false) {
   return useQuery({
     queryKey: [...keys.wallets, { includeArchived }],
-    queryFn: () =>
-      apiRequest<Wallet[]>(`/api/v1/wallets${queryString({ includeArchived })}`)
+    queryFn: () => apiRequest<Wallet[]>(`/api/v1/wallets${queryString({ includeArchived })}`)
   });
 }
 
@@ -109,8 +108,7 @@ export function useSetWalletArchived() {
 export function useCategories(type?: CategoryType) {
   return useQuery({
     queryKey: keys.categories(type),
-    queryFn: () =>
-      apiRequest<Category[]>(`/api/v1/categories${queryString({ type })}`),
+    queryFn: () => apiRequest<Category[]>(`/api/v1/categories${queryString({ type })}`),
     staleTime: 5 * 60_000
   });
 }
@@ -170,7 +168,13 @@ export function useTransfers(page = 0) {
 export function useCreateTransfer() {
   const client = useQueryClient();
   return useMutation({
-    mutationFn: ({ payload, idempotencyKey }: { payload: TransferPayload; idempotencyKey: string }) =>
+    mutationFn: ({
+      payload,
+      idempotencyKey
+    }: {
+      payload: TransferPayload;
+      idempotencyKey: string;
+    }) =>
       apiRequest<Transfer>('/api/v1/transfers', {
         method: 'POST',
         headers: { 'Idempotency-Key': idempotencyKey },
@@ -297,9 +301,7 @@ export function useAuditLogs(filters: AuditFilters) {
   return useQuery({
     queryKey: keys.auditLogs(filters),
     queryFn: () =>
-      apiRequest<PageResponse<AuditLog>>(
-        `/api/v1/admin/audit-logs${queryString({ ...filters })}`
-      ),
+      apiRequest<PageResponse<AuditLog>>(`/api/v1/admin/audit-logs${queryString({ ...filters })}`),
     placeholderData: keepPreviousData
   });
 }

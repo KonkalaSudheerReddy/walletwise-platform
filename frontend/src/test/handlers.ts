@@ -90,8 +90,12 @@ export const handlers = [
       closingBalance: 3459.75,
       transactionCount: 12,
       previousMonthComparisonPercent: -4.5,
-      expenseByCategory: [{ categoryId: 'category-1', categoryName: 'Groceries', amount: 350, percentage: 12.7 }],
-      incomeByCategory: [{ categoryId: 'income-1', categoryName: 'Salary', amount: 5200, percentage: 100 }],
+      expenseByCategory: [
+        { categoryId: 'category-1', categoryName: 'Groceries', amount: 350, percentage: 12.7 }
+      ],
+      incomeByCategory: [
+        { categoryId: 'income-1', categoryName: 'Salary', amount: 5200, percentage: 100 }
+      ],
       spendingTrend: [{ date: '2026-08-03', amount: 42.25 }],
       budgetUtilization: [
         {

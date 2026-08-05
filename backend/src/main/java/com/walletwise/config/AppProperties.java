@@ -16,5 +16,9 @@ public record AppProperties(
     String publicUrl) {
 
   public record Jwt(
-      String issuer, String secret, Duration accessTokenTtl, Duration refreshTokenTtl) {}
+      String issuer,
+      String secret,
+      Duration accessTokenTtl,
+      Duration refreshTokenTtl,
+      Duration refreshReuseGrace) {}
 }

@@ -107,7 +107,9 @@ export function AdminRoute() {
 export function AppShell() {
   const { user, logout } = useAuth();
   const { dark, setDark } = useTheme();
-  const [collapsed, setCollapsed] = useState(() => localStorage.getItem('walletwise-sidebar') === 'collapsed');
+  const [collapsed, setCollapsed] = useState(
+    () => localStorage.getItem('walletwise-sidebar') === 'collapsed'
+  );
   const unread = useUnreadCount(Boolean(user));
 
   useEffect(() => {
@@ -139,7 +141,12 @@ export function AppShell() {
             <SidebarLink key={item.to} {...item} collapsed={collapsed} />
           ))}
           {user?.role === 'ADMIN' && (
-            <SidebarLink to="/admin/users" label="Administration" icon={ShieldCheck} collapsed={collapsed} />
+            <SidebarLink
+              to="/admin/users"
+              label="Administration"
+              icon={ShieldCheck}
+              collapsed={collapsed}
+            />
           )}
         </nav>
         <div className="border-t border-slate-200 p-3 dark:border-slate-800">
@@ -203,12 +210,18 @@ export function AppShell() {
           </div>
         </header>
 
-        <main id="main-content" className="mx-auto w-full max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-8 lg:pb-8">
+        <main
+          id="main-content"
+          className="mx-auto w-full max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-8 lg:pb-8"
+        >
           <Outlet />
         </main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-slate-200 bg-white px-1 pb-[max(.25rem,env(safe-area-inset-bottom))] dark:border-slate-800 dark:bg-slate-900 lg:hidden" aria-label="Mobile navigation">
+      <nav
+        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-slate-200 bg-white px-1 pb-[max(.25rem,env(safe-area-inset-bottom))] dark:border-slate-800 dark:bg-slate-900 lg:hidden"
+        aria-label="Mobile navigation"
+      >
         {[
           { to: '/dashboard', label: 'Home', icon: LayoutDashboard },
           { to: '/wallets', label: 'Wallets', icon: CreditCard },
@@ -243,10 +256,16 @@ export function PublicLayout({ children }: { children: ReactNode }) {
           <WalletWiseLogo />
         </Link>
         <nav className="flex items-center gap-2" aria-label="Account">
-          <Link to="/login" className="rounded-xl px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">
+          <Link
+            to="/login"
+            className="rounded-xl px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
             Log in
           </Link>
-          <Link to="/register" className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800">
+          <Link
+            to="/register"
+            className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800"
+          >
             Create account
           </Link>
         </nav>
