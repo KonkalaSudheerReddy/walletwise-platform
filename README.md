@@ -9,6 +9,14 @@
   Spring Boot, React, TypeScript, and PostgreSQL.
 </p>
 
+<p align="center">
+  <a href="https://github.com/KonkalaSudheerReddy/walletwise-platform/actions/workflows/ci.yml"><img src="https://github.com/KonkalaSudheerReddy/walletwise-platform/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status" /></a>
+  <a href="https://github.com/KonkalaSudheerReddy/walletwise-platform/actions/workflows/codeql.yml"><img src="https://github.com/KonkalaSudheerReddy/walletwise-platform/actions/workflows/codeql.yml/badge.svg?branch=main" alt="CodeQL status" /></a>
+  <a href="https://github.com/KonkalaSudheerReddy/walletwise-platform/actions/workflows/pages.yml"><img src="https://github.com/KonkalaSudheerReddy/walletwise-platform/actions/workflows/pages.yml/badge.svg?branch=main" alt="Pages status" /></a>
+  <a href="https://codespaces.new/KonkalaSudheerReddy/walletwise-platform?quickstart=1"><img src="https://img.shields.io/badge/Open_in-Codespaces-181717?logo=github" alt="Open in GitHub Codespaces" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/KonkalaSudheerReddy/walletwise-platform" alt="MIT license" /></a>
+</p>
+
 WalletWise lets users create virtual wallets, record income and expenses,
 transfer virtual funds, set monthly category budgets, receive threshold alerts,
 search ledger history, and understand monthly financial activity. It is a
@@ -16,10 +24,21 @@ portfolio and educational application designed to demonstrate transaction
 consistency, persistent idempotency, security boundaries, testing, and modern
 delivery—not a real-money product.
 
-> **Deployment status:** the repository is configured for GitHub Pages, GHCR,
-> Render, and Neon. Hosted application, Swagger, health, showcase, and workflow
-> badges are intentionally not advertised until their actual deployments have
-> been authenticated and verified.
+> **Verified status:** the [GitHub Pages showcase](https://konkalasudheerreddy.github.io/walletwise-platform/)
+> is live, and the [GHCR image](https://github.com/KonkalaSudheerReddy/walletwise-platform/pkgs/container/walletwise-platform)
+> is anonymously pullable. GitHub Actions verifies the backend, frontend,
+> PostgreSQL integration tests, production image, API workflow, browser journey,
+> and CodeQL analysis. The Render/Neon application has not been provisioned
+> because provider credentials are unavailable, so no public application,
+> Swagger, or health endpoint is claimed.
+
+| Project resource | Link |
+|---|---|
+| Portfolio showcase | [Open GitHub Pages](https://konkalasudheerreddy.github.io/walletwise-platform/) |
+| Automated verification | [View GitHub Actions](https://github.com/KonkalaSudheerReddy/walletwise-platform/actions) |
+| Container package | [Open GHCR package](https://github.com/KonkalaSudheerReddy/walletwise-platform/pkgs/container/walletwise-platform) |
+| Versioned source | [Open the latest release](https://github.com/KonkalaSudheerReddy/walletwise-platform/releases/latest) |
+| Cloud development | [Create a Codespace](https://codespaces.new/KonkalaSudheerReddy/walletwise-platform?quickstart=1) |
 
 ## Why this project is interesting
 
@@ -40,6 +59,19 @@ delivery—not a real-money product.
 - **Production-minded delivery:** Flyway migrations, PostgreSQL/Testcontainers,
   full-stack Playwright coverage, a non-root multi-stage image, Compose, GitHub
   Actions, Codespaces, Pages, and Render/Neon configuration.
+
+## Product tour
+
+These screens are captured automatically from the production Docker image after
+the full API and browser smoke journeys pass.
+
+| Dashboard | Wallets |
+|---|---|
+| ![WalletWise dashboard with wallet balances and recent activity](docs/images/dashboard.jpg) | ![WalletWise wallets view](docs/images/wallets.jpg) |
+| Transactions | Budgets |
+| ![WalletWise searchable transaction ledger](docs/images/transactions.jpg) | ![WalletWise monthly budget tracking](docs/images/budgets.jpg) |
+| Analytics | Sign in |
+| ![WalletWise income and expense analytics](docs/images/analytics.jpg) | ![WalletWise secure sign-in screen](docs/images/login.jpg) |
 
 ## Demo account
 

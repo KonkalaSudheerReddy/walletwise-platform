@@ -23,6 +23,7 @@
         </a>
         <nav aria-label="Primary navigation">
           <ul class="nav-list">
+            <li><a href="#screenshots">Screenshots</a></li>
             <li><a href="#features">Features</a></li>
             <li><a href="#architecture">Architecture</a></li>
             <li><a href="#engineering">Engineering</a></li>
@@ -57,6 +58,18 @@
               >
                 Open in Codespaces
               </a>
+              <a
+                class="button button-secondary"
+                href="https://github.com/KonkalaSudheerReddy/walletwise-platform/releases/latest"
+              >
+                View latest release
+              </a>
+              <a
+                class="button button-secondary"
+                href="https://github.com/KonkalaSudheerReddy/walletwise-platform/pkgs/container/walletwise-platform"
+              >
+                View Docker image
+              </a>
             </div>
             <p class="status-note">
               A hosted backend is not advertised until a Render and Neon deployment is
@@ -86,6 +99,95 @@
               </div>
             </dl>
           </aside>
+        </div>
+      </section>
+
+      <section
+        class="section section-tinted"
+        id="screenshots"
+        aria-labelledby="screenshots-title"
+      >
+        <div class="container">
+          <p class="eyebrow">Verified product tour</p>
+          <h2 id="screenshots-title">See the production build in action</h2>
+          <p class="section-intro">
+            GitHub Actions captures these screens from the production Docker image only after
+            its database, API smoke flow, and full browser journey succeed. Select any image to
+            inspect the full-size capture.
+          </p>
+          <div class="screenshot-grid">
+            <figure class="screenshot-card screenshot-card-wide">
+              <a href="./assets/screenshots/dashboard.jpg" aria-label="Open full dashboard screenshot">
+                <img
+                  src="./assets/screenshots/dashboard.jpg"
+                  alt="WalletWise dashboard showing balances, budget progress, and recent activity"
+                  width="1440"
+                  height="960"
+                />
+              </a>
+              <figcaption><strong>Dashboard</strong><span>A concise monthly financial overview</span></figcaption>
+            </figure>
+            <figure class="screenshot-card">
+              <a href="./assets/screenshots/wallets.jpg" aria-label="Open full wallets screenshot">
+                <img
+                  src="./assets/screenshots/wallets.jpg"
+                  alt="WalletWise wallet management screen"
+                  width="1440"
+                  height="960"
+                  loading="lazy"
+                />
+              </a>
+              <figcaption><strong>Wallets</strong><span>Virtual balances with clear ownership</span></figcaption>
+            </figure>
+            <figure class="screenshot-card">
+              <a href="./assets/screenshots/transactions.jpg" aria-label="Open full transactions screenshot">
+                <img
+                  src="./assets/screenshots/transactions.jpg"
+                  alt="WalletWise searchable immutable transaction ledger"
+                  width="1440"
+                  height="960"
+                  loading="lazy"
+                />
+              </a>
+              <figcaption><strong>Transactions</strong><span>Searchable, paginated ledger history</span></figcaption>
+            </figure>
+            <figure class="screenshot-card">
+              <a href="./assets/screenshots/budgets.jpg" aria-label="Open full budgets screenshot">
+                <img
+                  src="./assets/screenshots/budgets.jpg"
+                  alt="WalletWise monthly category budget screen"
+                  width="1440"
+                  height="960"
+                  loading="lazy"
+                />
+              </a>
+              <figcaption><strong>Budgets</strong><span>Threshold progress and proactive alerts</span></figcaption>
+            </figure>
+            <figure class="screenshot-card">
+              <a href="./assets/screenshots/analytics.jpg" aria-label="Open full analytics screenshot">
+                <img
+                  src="./assets/screenshots/analytics.jpg"
+                  alt="WalletWise income and expense analytics screen"
+                  width="1440"
+                  height="960"
+                  loading="lazy"
+                />
+              </a>
+              <figcaption><strong>Analytics</strong><span>Income, spending, and category insights</span></figcaption>
+            </figure>
+            <figure class="screenshot-card">
+              <a href="./assets/screenshots/login.jpg" aria-label="Open full sign-in screenshot">
+                <img
+                  src="./assets/screenshots/login.jpg"
+                  alt="WalletWise secure sign-in screen"
+                  width="1440"
+                  height="960"
+                  loading="lazy"
+                />
+              </a>
+              <figcaption><strong>Sign in</strong><span>Clear access to the synthetic demo account</span></figcaption>
+            </figure>
+          </div>
         </div>
       </section>
 

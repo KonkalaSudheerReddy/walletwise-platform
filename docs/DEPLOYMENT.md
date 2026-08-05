@@ -6,11 +6,17 @@ with a separate static project showcase on GitHub Pages.
 
 ## Current deployment status
 
-The repository contains deployment-ready configuration, but this source tree
-does not prove that a Render service or Neon database exists. Provider setup
-requires the repository owner's authenticated Render and Neon sessions. Do not
-publish or invent an application, Swagger, or health URL until the verification
-steps below succeed.
+| Surface | Verified state |
+|---|---|
+| GitHub Pages | Live at <https://konkalasudheerreddy.github.io/walletwise-platform/> and returned HTTP 200 on 2026-08-05 |
+| CI and CodeQL | Main-branch workflows verify the backend, frontend, PostgreSQL integration tests, production image, API/browser smoke flows, and static analysis |
+| GHCR | `ghcr.io/konkalasudheerreddy/walletwise-platform:latest` is published with SBOM/provenance and was verified as anonymously pullable on 2026-08-05 |
+| Render and Neon | Not provisioned because authenticated provider credentials are unavailable |
+
+There is therefore no public WalletWise application, Swagger UI, or health
+endpoint to advertise. The repository contains deployment-ready configuration,
+but an owner must complete the authenticated Render and Neon setup and run all
+verification steps below before publishing those URLs.
 
 ## Local Docker Compose
 
@@ -78,10 +84,10 @@ write`, and generates provenance, an SBOM, and a GitHub attestation. It does not
 need a personal access token. Published tags include `latest`, the commit SHA,
 and semantic-version forms on a release tag.
 
-The first GHCR publication is private by default even when the repository is
-public. After the first successful workflow, an owner must open the package
-settings and deliberately change visibility to **Public** if anonymous pulls are
-desired. This visibility change cannot be reversed. Verify before advertising:
+This repository's package is public, and an anonymous manifest pull was verified
+against the published digest on 2026-08-05. A newly forked or renamed package
+can have different visibility; verify its package settings and anonymous pull
+access before advertising it:
 
 ```bash
 docker pull ghcr.io/konkalasudheerreddy/walletwise-platform:latest
@@ -158,13 +164,11 @@ inventing an availability commitment.
 
 `.github/workflows/pages.yml` publishes only `showcase/` plus verified images
 from `docs/images/`. It does not attempt to run Spring Boot on GitHub Pages.
-Repository Pages settings must use **GitHub Actions** as the source. After a
-successful deployment, verify the URL returned by the workflow, internal links,
-responsive layout, and image loading before setting it as the repository
-homepage.
-
-Do not add a Pages badge or URL based only on the expected owner/repository path;
-use the URL reported by the successful deployment.
+Repository Pages settings use **GitHub Actions** as the source. The workflow's
+reported deployment URL, <https://konkalasudheerreddy.github.io/walletwise-platform/>,
+was verified with an HTTP 200 response and is configured as the repository
+homepage. Recheck the deployment, internal links, responsive layout, and image
+loading after every showcase change.
 
 ## GitHub Codespaces
 

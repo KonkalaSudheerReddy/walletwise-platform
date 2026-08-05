@@ -309,6 +309,64 @@ h3 {
   background: var(--navy-900);
 }
 
+.screenshot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+
+.screenshot-card {
+  overflow: hidden;
+  margin: 0;
+  background: var(--white);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+}
+
+.screenshot-card-wide {
+  grid-column: 1 / -1;
+}
+
+.screenshot-card a {
+  display: block;
+  overflow: hidden;
+  background: var(--slate-100);
+}
+
+.screenshot-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  object-position: top;
+  transition: transform 180ms ease;
+}
+
+.screenshot-card a:hover img {
+  transform: scale(1.012);
+}
+
+.screenshot-card figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+}
+
+.screenshot-card figcaption strong,
+.screenshot-card figcaption span {
+  display: block;
+}
+
+.screenshot-card figcaption span {
+  color: var(--slate-600);
+  font-size: 0.88rem;
+  text-align: right;
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -475,6 +533,16 @@ code {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .screenshot-card figcaption {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .screenshot-card figcaption span {
+    text-align: left;
+  }
+
   .architecture-flow {
     grid-template-columns: 1fr;
   }
@@ -512,6 +580,14 @@ code {
 
   .card-grid {
     grid-template-columns: 1fr;
+  }
+
+  .screenshot-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .screenshot-card-wide {
+    grid-column: auto;
   }
 
   .signal-list div {
