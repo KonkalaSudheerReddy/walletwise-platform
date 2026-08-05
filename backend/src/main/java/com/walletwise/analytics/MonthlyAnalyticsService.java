@@ -7,6 +7,7 @@ import com.walletwise.user.AppUser;
 import com.walletwise.user.CurrentUser;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Types;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -142,7 +143,7 @@ public class MonthlyAnalyticsService {
         new MapSqlParameterSource()
             .addValue("ownerId", ownerId)
             .addValue("currency", currency)
-            .addValue("boundary", boundary);
+            .addValue("boundary", boundary.atOffset(ZoneOffset.UTC), Types.TIMESTAMP_WITH_TIMEZONE);
     return decimal(
         jdbc.queryForObject(
             """
@@ -178,8 +179,8 @@ public class MonthlyAnalyticsService {
     return new MapSqlParameterSource()
         .addValue("ownerId", ownerId)
         .addValue("currency", currency)
-        .addValue("start", start)
-        .addValue("end", end);
+        .addValue("start", start.atOffset(ZoneOffset.UTC), Types.TIMESTAMP_WITH_TIMEZONE)
+        .addValue("end", end.atOffset(ZoneOffset.UTC), Types.TIMESTAMP_WITH_TIMEZONE);
   }
 
   private static BigDecimal decimal(Object value) {

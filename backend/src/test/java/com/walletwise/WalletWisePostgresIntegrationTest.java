@@ -16,6 +16,8 @@ import com.walletwise.audit.AuditService;
 import jakarta.servlet.http.Cookie;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.time.YearMonth;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -128,6 +130,22 @@ class WalletWisePostgresIntegrationTest {
             jdbc.queryForObject(
                 "select count(*) from flyway_schema_history where success", Integer.class))
         .isGreaterThanOrEqualTo(2);
+  }
+
+  @Test
+  void monthlyAnalyticsBindsUtcBoundariesAgainstPostgres() throws Exception {
+    String token = registerUser("Analytics User");
+    createWallet(token, "Analytics wallet", "42.50");
+    String month = YearMonth.now(ZoneOffset.UTC).toString();
+
+    mvc.perform(
+            get("/api/v1/analytics/monthly")
+                .queryParam("month", month)
+                .header("Authorization", "Bearer " + token))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.month").value(month))
+        .andExpect(jsonPath("$.currency").value("USD"))
+        .andExpect(jsonPath("$.closingBalance").isNumber());
   }
 
   @Test
