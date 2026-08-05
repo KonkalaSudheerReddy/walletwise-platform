@@ -95,10 +95,7 @@ export function TextField({
   const helpId = `${fieldId}-help`;
   return (
     <div className="grid gap-1.5">
-      <label
-        className="text-sm font-medium text-slate-700 dark:text-slate-200"
-        htmlFor={fieldId}
-      >
+      <label className="text-sm font-medium text-slate-700 dark:text-slate-200" htmlFor={fieldId}>
         {label}
       </label>
       <input
@@ -137,10 +134,7 @@ export function SelectField({
   const helpId = `${fieldId}-help`;
   return (
     <div className="grid gap-1.5">
-      <label
-        className="text-sm font-medium text-slate-700 dark:text-slate-200"
-        htmlFor={fieldId}
-      >
+      <label className="text-sm font-medium text-slate-700 dark:text-slate-200" htmlFor={fieldId}>
         {label}
       </label>
       <select
