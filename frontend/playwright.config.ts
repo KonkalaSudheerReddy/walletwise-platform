@@ -7,9 +7,7 @@ export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   workers: 1,
-  reporter: process.env.CI
-    ? [['line'], ['html', { open: 'never' }], ['github']]
-    : 'list',
+  reporter: process.env.CI ? [['line'], ['html', { open: 'never' }], ['github']] : 'list',
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:8080',
     trace: 'retain-on-failure',
