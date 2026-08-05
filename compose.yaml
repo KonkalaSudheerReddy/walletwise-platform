@@ -1,0 +1,51 @@
+name: walletwise
+
+services:
+  postgres:
+    image: postgres:16.10-alpine3.22
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-walletwise}
+      POSTGRES_USER: ${POSTGRES_USER:-walletwise}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-walletwise_dev_only}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - walletwise-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
+  app:
+    image: walletwise-platform:ci
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      PORT: 8080
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-demo}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-walletwise}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-walletwise}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-walletwise_dev_only}
+      JWT_SECRET: ${JWT_SECRET:-local-development-only-walletwise-secret-change-me-2026}
+      APP_DEMO_SEED_ENABLED: ${APP_DEMO_SEED_ENABLED:-true}
+      APP_COOKIE_SECURE: ${APP_COOKIE_SECURE:-false}
+      APP_PUBLIC_URL: ${APP_PUBLIC_URL:-http://localhost:8080}
+      APP_CORS_ALLOWED_ORIGINS: ${APP_CORS_ALLOWED_ORIGINS:-http://localhost:5173}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://127.0.0.1:8080/actuator/health >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      start_period: 45s
+      retries: 12
+    restart: unless-stopped
+
+volumes:
+  walletwise-postgres-data:
