@@ -133,7 +133,7 @@ public class TransferService {
     LedgerService.ensureCanDebit(source, amount);
 
     Transfer transfer =
-        transfers.save(
+        transfers.saveAndFlush(
             new Transfer(
                 UUID.randomUUID(),
                 user,

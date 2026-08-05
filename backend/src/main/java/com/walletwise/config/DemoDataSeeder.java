@@ -199,7 +199,7 @@ public class DemoDataSeeder implements ApplicationRunner {
     Instant transferTime = now.minusSeconds(60);
     String transferKey = "demo-seed-transfer-v1";
     Transfer transfer =
-        transfers.save(
+        transfers.saveAndFlush(
             new Transfer(
                 UUID.fromString("00000000-0000-0000-0000-000000000301"),
                 demo,
