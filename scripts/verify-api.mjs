@@ -72,8 +72,10 @@ async function main() {
   );
   console.log("  ✓ health, OpenAPI, and Swagger UI");
 
-  const email = `api.smoke.${Date.now()}.${randomUUID().slice(0, 8)}@walletwise.test`;
-  const password = "Smoke@123456";
+  const email =
+    process.env.WALLETWISE_SMOKE_EMAIL ??
+    `api.smoke.${Date.now()}.${randomUUID().slice(0, 8)}@walletwise.test`;
+  const password = process.env.WALLETWISE_SMOKE_PASSWORD ?? "Smoke@123456";
   const registration = await call("/api/v1/auth/register", {
     method: "POST",
     auth: false,

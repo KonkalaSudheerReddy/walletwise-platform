@@ -147,6 +147,13 @@ requests monthly analytics. It exits nonzero on an unexpected status or a
 duplicate balance movement. Tokens are held only in process memory and are not
 printed.
 
+In CI, the smoke account uses a run-scoped synthetic email. The stack then
+restarts only the application container and runs
+`scripts/verify-persistence.mjs`, proving that the smoke wallets and balances
+survive in PostgreSQL when a fresh application container starts. It also proves
+that demo reseeding rebuilds exactly one deterministic set of wallets, ledger
+entries, and transfers rather than duplicating them.
+
 The Postman collection provides the same flow interactively. A cookie jar is
 required for refresh and logout behavior.
 
