@@ -73,7 +73,10 @@ test('an uncertain transfer retry reuses the same idempotency key and body', asy
   renderWithProviders(<TransferPage />);
   await screen.findByRole('heading', { name: 'Transfer' });
   await user.selectOptions(screen.getByLabelText('Source wallet'), 'source');
-  await user.selectOptions(screen.getByLabelText('Destination wallet'), 'destination');
+  await user.selectOptions(
+    await screen.findByRole('combobox', { name: /Destination wallet/i }),
+    'destination'
+  );
   await user.type(screen.getByLabelText('Amount'), '10.00');
   await user.type(screen.getByLabelText('Note (optional)'), 'Save');
   await user.click(screen.getByRole('button', { name: 'Review transfer' }));
