@@ -123,7 +123,7 @@ export function TransactionsPage() {
     const requested = params.get('add');
     return requested === 'income' || requested === 'expense' || requested === 'adjustment' ? requested : null;
   });
-  const wallets = useWallets();
+  const wallets = useWallets(true);
   const categories = useCategories();
 
   const filters: TransactionFilters = {
@@ -175,7 +175,7 @@ export function TransactionsPage() {
       <Card className="p-4 sm:p-5">
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <div className="relative"><Search className="absolute left-3 top-3.5 h-4 w-4 text-slate-400" /><input aria-label="Search descriptions" value={filters.search ?? ''} onChange={(event) => updateFilter('search', event.target.value)} placeholder="Search descriptions" className="h-11 w-full rounded-xl border border-slate-300 bg-white pl-10 pr-3 text-sm dark:border-slate-700 dark:bg-slate-950" /></div>
-          <select aria-label="Filter by wallet" value={filters.walletId ?? ''} onChange={(event) => updateFilter('walletId', event.target.value)} className="h-11 rounded-xl border border-slate-300 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-950"><option value="">All wallets</option>{wallets.data?.map((wallet) => <option key={wallet.id} value={wallet.id}>{wallet.name}</option>)}</select>
+          <select aria-label="Filter by wallet" value={filters.walletId ?? ''} onChange={(event) => updateFilter('walletId', event.target.value)} className="h-11 rounded-xl border border-slate-300 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-950"><option value="">All wallets</option>{wallets.data?.map((wallet) => <option key={wallet.id} value={wallet.id}>{wallet.name}{wallet.archived ? ' (archived)' : ''}</option>)}</select>
           <select aria-label="Filter by type" value={filters.type ?? ''} onChange={(event) => updateFilter('type', event.target.value)} className="h-11 rounded-xl border border-slate-300 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-950"><option value="">All types</option>{(['OPENING_BALANCE', 'INCOME', 'EXPENSE', 'TRANSFER_IN', 'TRANSFER_OUT', 'ADJUSTMENT'] satisfies TransactionType[]).map((type) => <option key={type} value={type}>{titleCase(type)}</option>)}</select>
           <select aria-label="Filter by category" value={filters.categoryId ?? ''} onChange={(event) => updateFilter('categoryId', event.target.value)} className="h-11 rounded-xl border border-slate-300 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-950"><option value="">All categories</option>{categories.data?.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select>
           <TextField label="From date" type="date" value={filters.startDate ?? ''} onChange={(event) => updateFilter('startDate', event.target.value)} />
