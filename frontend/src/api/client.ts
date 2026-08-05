@@ -1,6 +1,9 @@
 import type { AuthResponse, ProblemDetails, User } from './types';
 
-const configuredBaseUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '');
+const configuredBaseUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(
+  /\/$/,
+  ''
+);
 const API_BASE_URL = configuredBaseUrl ?? '';
 
 type SessionStatus = 'restoring' | 'authenticated' | 'anonymous';
