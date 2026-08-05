@@ -94,11 +94,13 @@ export function TextField({
   const fieldId = id ?? generatedId;
   const helpId = `${fieldId}-help`;
   return (
-    <label
-      className="grid gap-1.5 text-sm font-medium text-slate-700 dark:text-slate-200"
-      htmlFor={fieldId}
-    >
-      {label}
+    <div className="grid gap-1.5">
+      <label
+        className="text-sm font-medium text-slate-700 dark:text-slate-200"
+        htmlFor={fieldId}
+      >
+        {label}
+      </label>
       <input
         id={fieldId}
         aria-invalid={Boolean(error)}
@@ -118,7 +120,7 @@ export function TextField({
           {error ?? hint}
         </span>
       )}
-    </label>
+    </div>
   );
 }
 
@@ -134,11 +136,13 @@ export function SelectField({
   const fieldId = id ?? generatedId;
   const helpId = `${fieldId}-help`;
   return (
-    <label
-      className="grid gap-1.5 text-sm font-medium text-slate-700 dark:text-slate-200"
-      htmlFor={fieldId}
-    >
-      {label}
+    <div className="grid gap-1.5">
+      <label
+        className="text-sm font-medium text-slate-700 dark:text-slate-200"
+        htmlFor={fieldId}
+      >
+        {label}
+      </label>
       <select
         id={fieldId}
         aria-invalid={Boolean(error)}
@@ -156,7 +160,7 @@ export function SelectField({
           {error ?? hint}
         </span>
       )}
-    </label>
+    </div>
   );
 }
 
