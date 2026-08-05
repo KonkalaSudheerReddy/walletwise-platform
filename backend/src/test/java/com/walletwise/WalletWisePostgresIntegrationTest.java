@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.jayway.jsonpath.JsonPath;
 import com.walletwise.audit.AuditService;
+import jakarta.servlet.http.Cookie;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -357,11 +358,7 @@ class WalletWisePostgresIntegrationTest {
             .findFirst()
             .orElseThrow();
     String replacementCookie = responseCookie(successful);
-    mvc.perform(
-            post("/api/v1/auth/refresh")
-                .header("Cookie", replacementCookie)
-                .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk());
+    assertThat(performRefresh(replacementCookie).getResponse().getStatus()).isEqualTo(200);
   }
 
   private UUID createWallet(String token, String name, String openingBalance) throws Exception {
@@ -428,7 +425,9 @@ class WalletWisePostgresIntegrationTest {
   }
 
   private MvcResult performRefresh(String cookie) throws Exception {
-    return mvc.perform(post("/api/v1/auth/refresh").header("Cookie", cookie)).andReturn();
+    String[] pair = cookie.split("=", 2);
+    return mvc.perform(post("/api/v1/auth/refresh").cookie(new Cookie(pair[0], pair[1])))
+        .andReturn();
   }
 
   private static String responseCookie(MvcResult result) {
