@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.walletwise</groupId>
 	<artifactId>backend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>WalletWise</name>
 	<description>Secure digital wallet and expense management platform</description>
 	<url/>
