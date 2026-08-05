@@ -122,8 +122,14 @@ jobs:
       - name: Run API smoke verification
         run: node scripts/verify-api.mjs
 
+      - name: Verify browser test discovery
+        working-directory: frontend
+        timeout-minutes: 2
+        run: npx playwright test --list
+
       - name: Run browser end-to-end tests
         working-directory: frontend
+        timeout-minutes: 5
         run: npm run test:e2e
 
       - name: Capture verified demo screenshots
@@ -135,17 +141,20 @@ jobs:
           name: walletwise-screenshots
           path: docs/images/*.jpg
           if-no-files-found: error
+          overwrite: true
           retention-days: 14
 
       - name: Preserve browser diagnostics
-        if: failure()
+        if: failure() || cancelled()
         uses: actions/upload-artifact@v7
         with:
           name: walletwise-browser-diagnostics
           path: |
             frontend/playwright-report/
             frontend/test-results/
+            docs/images/*.jpg
           if-no-files-found: ignore
+          overwrite: true
           retention-days: 7
 
       - name: Show container logs

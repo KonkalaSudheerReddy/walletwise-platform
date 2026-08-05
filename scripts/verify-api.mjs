@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 const baseUrl = (process.env.WALLETWISE_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
+const requestTimeoutMs = Number(process.env.WALLETWISE_REQUEST_TIMEOUT_MS ?? "15000");
 let accessToken;
 let refreshCookie;
 
@@ -33,6 +34,7 @@ async function call(path, { method = "GET", body, statuses = [200], headers = {}
     headers: requestHeaders,
     body: body === undefined ? undefined : JSON.stringify(body),
     redirect: "manual",
+    signal: AbortSignal.timeout(requestTimeoutMs),
   });
   readCookie(response);
 
@@ -60,7 +62,15 @@ async function main() {
 
   const health = await call("/actuator/health", { auth: false });
   invariant(health.payload?.status === "UP", "Health endpoint did not report UP");
-  console.log("  ✓ health");
+  const openApi = await call("/v3/api-docs", { auth: false });
+  invariant(openApi.payload?.openapi?.startsWith("3."), "OpenAPI document was unavailable");
+  invariant(openApi.payload?.paths?.["/api/v1/transfers"], "OpenAPI omitted the transfer contract");
+  const swagger = await call("/swagger-ui/index.html", { auth: false });
+  invariant(
+    swagger.response.headers.get("content-type")?.includes("text/html"),
+    "Swagger UI did not return HTML"
+  );
+  console.log("  ✓ health, OpenAPI, and Swagger UI");
 
   const email = `api.smoke.${Date.now()}.${randomUUID().slice(0, 8)}@walletwise.test`;
   const password = "Smoke@123456";

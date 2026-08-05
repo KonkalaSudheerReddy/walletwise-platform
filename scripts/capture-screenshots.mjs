@@ -10,11 +10,11 @@ const outputDirectory = path.resolve(scriptDirectory, "../docs/images");
 const baseUrl = (process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
 
 const captures = [
-  ["/dashboard", "dashboard.jpg"],
-  ["/wallets", "wallets.jpg"],
-  ["/transactions", "transactions.jpg"],
-  ["/budgets", "budgets.jpg"],
-  ["/analytics", "analytics.jpg"],
+  ["/dashboard", "dashboard.jpg", "Dashboard"],
+  ["/wallets", "wallets.jpg", "Wallets"],
+  ["/transactions", "transactions.jpg", "Transactions"],
+  ["/budgets", "budgets.jpg", "Budgets"],
+  ["/analytics", "analytics.jpg", "Analytics"],
 ];
 
 await mkdir(outputDirectory, { recursive: true });
@@ -30,6 +30,7 @@ const page = await context.newPage();
 
 try {
   await page.goto(`${baseUrl}/login`, { waitUntil: "networkidle" });
+  await page.getByRole("heading", { name: "Welcome back", exact: true }).waitFor();
   await page.screenshot({
     path: path.join(outputDirectory, "login.jpg"),
     type: "jpeg",
@@ -42,9 +43,12 @@ try {
   await page.waitForURL("**/dashboard");
   await page.getByRole("heading").first().waitFor();
 
-  for (const [route, filename] of captures) {
+  for (const [route, filename, heading] of captures) {
     await page.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });
-    await page.getByRole("heading").first().waitFor();
+    await page.waitForURL(`**${route}`);
+    await page.getByRole("heading", { name: heading, exact: true }).waitFor();
+    await page.evaluate(() => document.fonts.ready);
+    await page.waitForTimeout(500);
     await page.screenshot({
       path: path.join(outputDirectory, filename),
       type: "jpeg",
