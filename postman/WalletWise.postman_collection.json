@@ -1,0 +1,751 @@
+{
+  "info": {
+    "_postman_id": "cda45fd3-291e-4b27-b0bc-9077148e46e8",
+    "name": "WalletWise API",
+    "description": "Synthetic end-to-end examples for the WalletWise REST API. Select the WalletWise Local environment and run folders in order. Access tokens stay in collection variables; refresh cookies stay in Postman's cookie jar. Never export real tokens or production credentials.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('Correlation ID is present', function () {",
+          "  pm.expect(pm.response.headers.get('X-Correlation-Id')).to.be.a('string').and.not.empty;",
+          "});"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Health",
+      "auth": { "type": "noauth" },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/actuator/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["actuator", "health"]
+        },
+        "description": "Safe liveness/readiness view used by Compose and Render."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Health is UP', function () {",
+              "  pm.response.to.have.status(200);",
+              "  pm.expect(pm.response.json().status).to.eql('UP');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Authentication",
+      "item": [
+        {
+          "name": "Register synthetic user",
+          "auth": { "type": "noauth" },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const uniqueEmail = `postman.${Date.now()}@walletwise.test`;",
+                  "pm.collectionVariables.set('userEmail', uniqueEmail);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('User is registered', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.accessToken).to.be.a('string').and.not.empty;",
+                  "  pm.expect(body.user.email).to.eql(pm.collectionVariables.get('userEmail'));",
+                  "  pm.collectionVariables.set('accessToken', body.accessToken);",
+                  "  pm.collectionVariables.set('userId', body.user.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"displayName\": \"Postman User\",\n  \"email\": \"{{userEmail}}\",\n  \"password\": \"{{userPassword}}\",\n  \"preferredCurrency\": \"USD\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "auth": { "type": "noauth" },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Session starts', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.tokenType).to.eql('Bearer');",
+                  "  pm.collectionVariables.set('accessToken', body.accessToken);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"password\": \"{{userPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "description": "Postman stores the HttpOnly refresh cookie in its cookie jar."
+          }
+        },
+        {
+          "name": "Current user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "me"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Authenticated user is returned', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().email).to.eql(pm.collectionVariables.get('userEmail'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - Categories and wallets",
+      "item": [
+        {
+          "name": "List income categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories?type=INCOME",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories"],
+              "query": [{ "key": "type", "value": "INCOME" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Income categories are available', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const categories = pm.response.json();",
+                  "  pm.expect(categories).to.be.an('array').that.is.not.empty;",
+                  "  pm.collectionVariables.set('incomeCategoryId', categories[0].id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List expense categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories?type=EXPENSE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories"],
+              "query": [{ "key": "type", "value": "EXPENSE" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Expense categories are available', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const categories = pm.response.json();",
+                  "  pm.expect(categories).to.be.an('array').that.is.not.empty;",
+                  "  pm.collectionVariables.set('expenseCategoryId', categories[0].id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create source wallet",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman source\",\n  \"type\": \"BANK\",\n  \"currency\": \"USD\",\n  \"openingBalance\": 500.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallets",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "wallets"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Source wallet is created', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  const wallet = pm.response.json();",
+                  "  pm.expect(wallet.balance).to.eql(500.00);",
+                  "  pm.collectionVariables.set('sourceWalletId', wallet.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create destination wallet",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman savings\",\n  \"type\": \"SAVINGS\",\n  \"currency\": \"USD\",\n  \"openingBalance\": 0.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallets",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "wallets"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Destination wallet is created', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  pm.collectionVariables.set('destinationWalletId', pm.response.json().id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 - Ledger",
+      "item": [
+        {
+          "name": "Record income",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"walletId\": \"{{sourceWalletId}}\",\n  \"amount\": 250.00,\n  \"categoryId\": \"{{incomeCategoryId}}\",\n  \"description\": \"Postman synthetic income\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/income",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", "income"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Income is recorded', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  pm.expect(pm.response.json().type).to.eql('INCOME');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Record expense",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"walletId\": \"{{sourceWalletId}}\",\n  \"amount\": 25.00,\n  \"categoryId\": \"{{expenseCategoryId}}\",\n  \"description\": \"Postman synthetic expense\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/expense",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", "expense"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Expense is recorded', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  pm.expect(pm.response.json().type).to.eql('EXPENSE');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 - Idempotent transfer",
+      "item": [
+        {
+          "name": "Create transfer",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set('idempotencyKey', pm.variables.replaceIn('{{$guid}}'));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Transfer is created once', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  const transfer = pm.response.json();",
+                  "  pm.expect(transfer.status).to.eql('COMPLETED');",
+                  "  pm.collectionVariables.set('transferId', transfer.id);",
+                  "  pm.collectionVariables.set('transferResponse', JSON.stringify(transfer));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{idempotencyKey}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sourceWalletId\": \"{{sourceWalletId}}\",\n  \"destinationWalletId\": \"{{destinationWalletId}}\",\n  \"amount\": 125.00,\n  \"note\": \"Postman idempotency example\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transfers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transfers"]
+            }
+          }
+        },
+        {
+          "name": "Retry identical transfer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{idempotencyKey}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sourceWalletId\": \"{{sourceWalletId}}\",\n  \"destinationWalletId\": \"{{destinationWalletId}}\",\n  \"amount\": 125.00,\n  \"note\": \"Postman idempotency example\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transfers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transfers"]
+            },
+            "description": "An identical retry replays the original 201 response without another movement."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Identical retry replays the original result', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  const replay = pm.response.json();",
+                  "  pm.expect(replay.id).to.eql(pm.collectionVariables.get('transferId'));",
+                  "  pm.expect(JSON.stringify(replay)).to.eql(pm.collectionVariables.get('transferResponse'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reject conflicting key reuse",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{idempotencyKey}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sourceWalletId\": \"{{sourceWalletId}}\",\n  \"destinationWalletId\": \"{{destinationWalletId}}\",\n  \"amount\": 126.00,\n  \"note\": \"Postman idempotency example\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transfers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transfers"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Different body with the same key conflicts', function () {",
+                  "  pm.response.to.have.status(409);",
+                  "  pm.expect(pm.response.json().status).to.eql(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 - Search, budgets, and analytics",
+      "item": [
+        {
+          "name": "Filtered paginated transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions?walletId={{sourceWalletId}}&minAmount=20.00&description=Postman&page=0&size=20&sort=occurredAt&direction=desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions"],
+              "query": [
+                { "key": "walletId", "value": "{{sourceWalletId}}" },
+                { "key": "minAmount", "value": "20.00" },
+                { "key": "description", "value": "Postman" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" },
+                { "key": "sort", "value": "occurredAt" },
+                { "key": "direction", "value": "desc" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Page metadata and filtered content are returned', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const page = pm.response.json();",
+                  "  pm.expect(page.content).to.be.an('array');",
+                  "  pm.expect(page.page).to.eql(0);",
+                  "  pm.expect(page.size).to.eql(20);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create current-month budget",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const now = new Date();",
+                  "const month = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`;",
+                  "pm.collectionVariables.set('budgetMonth', month);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Budget is created', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  pm.collectionVariables.set('budgetId', pm.response.json().id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryId\": \"{{expenseCategoryId}}\",\n  \"month\": \"{{budgetMonth}}\",\n  \"limitAmount\": 400.00,\n  \"alertThresholdPercent\": 80\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/budgets",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "budgets"]
+            }
+          }
+        },
+        {
+          "name": "Monthly analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/analytics/monthly?month={{budgetMonth}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "analytics", "monthly"],
+              "query": [{ "key": "month", "value": "{{budgetMonth}}" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Monthly analytics are available', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().month).to.eql(pm.collectionVariables.get('budgetMonth'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "07 - Notifications",
+      "item": [
+        {
+          "name": "List notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notifications?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "notifications"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Notification page is returned', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().content).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Unread count",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notifications/unread-count",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "notifications", "unread-count"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Unread count is non-negative', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().unreadCount).to.be.at.least(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "08 - Refresh and logout",
+      "item": [
+        {
+          "name": "Rotate refresh token",
+          "auth": { "type": "noauth" },
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "refresh"]
+            },
+            "description": "Uses the HttpOnly cookie retained by Postman's cookie jar."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Refresh token rotates', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.accessToken).to.be.a('string').and.not.empty;",
+                  "  pm.collectionVariables.set('accessToken', body.accessToken);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "auth": { "type": "noauth" },
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "logout"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Logout clears the session', function () {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                  "  pm.collectionVariables.unset('accessToken');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "09 - Admin examples",
+      "description": "Set adminAccessToken from an explicitly enabled synthetic administrator session before running. Regular USER tokens should receive 403.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{adminAccessToken}}", "type": "string" }]
+      },
+      "item": [
+        {
+          "name": "List users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/users?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "users"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List audit logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/audit-logs?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "audit-logs"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080", "type": "string" },
+    { "key": "userEmail", "value": "", "type": "string" },
+    { "key": "userPassword", "value": "Example@12345", "type": "string" },
+    { "key": "accessToken", "value": "", "type": "string" },
+    { "key": "adminAccessToken", "value": "", "type": "string" },
+    { "key": "userId", "value": "", "type": "string" },
+    { "key": "incomeCategoryId", "value": "", "type": "string" },
+    { "key": "expenseCategoryId", "value": "", "type": "string" },
+    { "key": "sourceWalletId", "value": "", "type": "string" },
+    { "key": "destinationWalletId", "value": "", "type": "string" },
+    { "key": "idempotencyKey", "value": "", "type": "string" },
+    { "key": "transferId", "value": "", "type": "string" },
+    { "key": "transferResponse", "value": "", "type": "string" },
+    { "key": "budgetMonth", "value": "", "type": "string" },
+    { "key": "budgetId", "value": "", "type": "string" }
+  ]
+}
+

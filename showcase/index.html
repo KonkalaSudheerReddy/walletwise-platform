@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="WalletWise is a Java and React portfolio project demonstrating secure wallet tracking, immutable ledger entries, budgets, analytics, and idempotent transfers."
+    />
+    <meta name="theme-color" content="#102a43" />
+    <title>WalletWise | Java full-stack portfolio project</title>
+    <link rel="icon" href="./assets/walletwise-mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="#top" aria-label="WalletWise home">
+          <img src="./assets/walletwise-mark.svg" alt="" width="40" height="40" />
+          <span>WalletWise</span>
+        </a>
+        <nav aria-label="Primary navigation">
+          <ul class="nav-list">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#engineering">Engineering</a></li>
+            <li><a href="#run">Run locally</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="hero" id="top">
+        <div class="container hero-grid">
+          <div>
+            <p class="eyebrow">Java full-stack portfolio project</p>
+            <h1>Understand your virtual money. Move it safely.</h1>
+            <p class="hero-copy">
+              WalletWise is a secure digital wallet and expense-management platform built to
+              demonstrate practical backend engineering: immutable ledger entries, atomic
+              balance changes, persistent idempotency, ownership checks, and useful financial
+              analytics.
+            </p>
+            <div class="button-row" aria-label="Project links">
+              <a
+                class="button button-primary"
+                href="https://github.com/KonkalaSudheerReddy/walletwise-platform"
+              >
+                View source on GitHub
+              </a>
+              <a
+                class="button button-secondary"
+                href="https://codespaces.new/KonkalaSudheerReddy/walletwise-platform?quickstart=1"
+              >
+                Open in Codespaces
+              </a>
+            </div>
+            <p class="status-note">
+              A hosted backend is not advertised until a Render and Neon deployment is
+              authenticated and verified. The complete application can be run locally with
+              Docker Compose.
+            </p>
+          </div>
+
+          <aside class="hero-panel" aria-label="WalletWise engineering summary">
+            <p class="panel-label">Engineering focus</p>
+            <dl class="signal-list">
+              <div>
+                <dt>Architecture</dt>
+                <dd>Modular monolith</dd>
+              </div>
+              <div>
+                <dt>Consistency</dt>
+                <dd>Atomic ledger updates</dd>
+              </div>
+              <div>
+                <dt>Retry safety</dt>
+                <dd>Persistent idempotency</dd>
+              </div>
+              <div>
+                <dt>Delivery</dt>
+                <dd>Docker + GitHub Actions</dd>
+              </div>
+            </dl>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" id="features" aria-labelledby="features-title">
+        <div class="container">
+          <p class="eyebrow">Product capabilities</p>
+          <h2 id="features-title">A focused financial-tracking workflow</h2>
+          <div class="card-grid">
+            <article class="feature-card">
+              <span class="card-number" aria-hidden="true">01</span>
+              <h3>Wallets and ledger</h3>
+              <p>Create virtual wallets, record income and expenses, archive wallets, and inspect immutable transaction history.</p>
+            </article>
+            <article class="feature-card">
+              <span class="card-number" aria-hidden="true">02</span>
+              <h3>Safe transfers</h3>
+              <p>Move virtual funds atomically while deterministic row locking and idempotency keys protect against duplicate updates.</p>
+            </article>
+            <article class="feature-card">
+              <span class="card-number" aria-hidden="true">03</span>
+              <h3>Budgets and alerts</h3>
+              <p>Set monthly category limits, monitor utilization, and receive deduplicated approaching, reached, or exceeded alerts.</p>
+            </article>
+            <article class="feature-card">
+              <span class="card-number" aria-hidden="true">04</span>
+              <h3>Search and analytics</h3>
+              <p>Filter paginated ledger activity and review monthly income, spending, category breakdowns, and wallet balances.</p>
+            </article>
+            <article class="feature-card">
+              <span class="card-number" aria-hidden="true">05</span>
+              <h3>Secure sessions</h3>
+              <p>Use short-lived JWT access tokens with rotated, hashed opaque refresh tokens delivered in an HttpOnly cookie.</p>
+            </article>
+            <article class="feature-card">
+              <span class="card-number" aria-hidden="true">06</span>
+              <h3>Operational visibility</h3>
+              <p>Trace requests with correlation IDs, safe audit records, structured logs, and narrowly exposed Actuator health information.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-tinted" id="architecture" aria-labelledby="architecture-title">
+        <div class="container">
+          <p class="eyebrow">Deployment topology</p>
+          <h2 id="architecture-title">One application, clear module boundaries</h2>
+          <p class="section-intro">
+            React assets and the versioned REST API are served from one Spring Boot process in
+            production. PostgreSQL remains the durable source of truth for wallets, ledger
+            entries, tokens, idempotency records, budgets, notifications, and audits.
+          </p>
+          <ol class="architecture-flow" aria-label="WalletWise request flow">
+            <li>
+              <strong>React + TypeScript</strong>
+              <span>Accessible responsive interface</span>
+            </li>
+            <li>
+              <strong>Spring Boot API</strong>
+              <span>Authentication, validation, and business modules</span>
+            </li>
+            <li>
+              <strong>PostgreSQL 16</strong>
+              <span>Flyway-managed relational state</span>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section" id="engineering" aria-labelledby="engineering-title">
+        <div class="container engineering-grid">
+          <div>
+            <p class="eyebrow">Engineering spotlight</p>
+            <h2 id="engineering-title">A transfer is one database transaction</h2>
+            <p class="section-intro">
+              WalletWise locks both owned wallets in stable UUID order, validates currency and
+              available balance, then writes the transfer, two linked ledger entries, both new
+              balances, and an audit event. Any failure rolls back the complete operation.
+            </p>
+          </div>
+          <ol class="transfer-steps">
+            <li><span>1</span> Reserve the caller-scoped idempotency key.</li>
+            <li><span>2</span> Lock wallet rows in deterministic order.</li>
+            <li><span>3</span> Validate ownership, currency, and funds.</li>
+            <li><span>4</span> Commit both sides of the ledger atomically.</li>
+            <li><span>5</span> Replay the stored response on a safe retry.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section section-dark" aria-labelledby="stack-title">
+        <div class="container">
+          <p class="eyebrow eyebrow-light">Technology</p>
+          <h2 id="stack-title">Designed for a Java backend interview</h2>
+          <ul class="stack-list" aria-label="Technology stack">
+            <li>Java 21</li>
+            <li>Spring Boot</li>
+            <li>Spring Security</li>
+            <li>PostgreSQL</li>
+            <li>Flyway</li>
+            <li>React</li>
+            <li>TypeScript</li>
+            <li>TanStack Query</li>
+            <li>Testcontainers</li>
+            <li>Playwright</li>
+            <li>Docker</li>
+            <li>GitHub Actions</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section" id="run" aria-labelledby="run-title">
+        <div class="container run-grid">
+          <div>
+            <p class="eyebrow">Try the project</p>
+            <h2 id="run-title">One command to start locally</h2>
+            <p class="section-intro">
+              Clone the repository, make sure Docker is running, and start the application and
+              PostgreSQL together. The UI is served at <code>http://localhost:8080</code>.
+            </p>
+          </div>
+          <pre class="command"><code>git clone https://github.com/KonkalaSudheerReddy/walletwise-platform.git
+cd walletwise-platform
+docker compose up --build</code></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div>
+          <strong>WalletWise</strong>
+          <p>Built by Konkala Sudheer Reddy as a portfolio and educational application.</p>
+        </div>
+        <p class="disclaimer">
+          Uses synthetic data only. No bank connection, real payments, stored funds, currency
+          conversion, or financial advice.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
